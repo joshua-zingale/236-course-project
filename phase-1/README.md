@@ -30,7 +30,7 @@ uv add pyspark jupyterlab plotly pandas
 
 ## Exploratory Data Analysis (EDA)
 
-The EDA was done inside of a Python notebook that can be viewed [here](/phase-1/eda/).
+The EDA was done inside of a Python notebook that can be viewed [here](eda/).
 
 From the analysis, we gather that both datasets contain reservations for hotels/lodging.
 
