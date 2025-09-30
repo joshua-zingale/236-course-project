@@ -24,7 +24,7 @@ uv init --python 3.13
 we added our requirements with
 
 ```bash
-uv add pyspark jupyterlab
+uv add pyspark jupyterlab plotly pandas
 ```
 
 
