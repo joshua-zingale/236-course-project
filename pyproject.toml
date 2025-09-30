@@ -1,0 +1,10 @@
+[project]
+name = "236-course-project"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "jupyterlab>=4.4.9",
+    "pyspark>=4.0.1",
+]
