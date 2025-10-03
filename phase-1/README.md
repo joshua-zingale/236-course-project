@@ -67,11 +67,14 @@ but for both do the histograms reveal that there is an uptick in reservations in
 
 ## Dataset Processing & Merging
 
+The full procedure for merging the two data sources is documented in the Jupyter Notebook available [here](merging/).
+
+Some key points:
+- Merging the data entailed identifying the shared columns, resolving name conflicts like between `arrival_date` and `arrival_date_day_of`.
+- Redundant columns, i.e. columns that provided no new information, like `arrival_date_week_number` were removed.
+- A new `arrival_time` columns was created from the month, day, and year columns, storing the date as a date instead of as three separate integers.
+    - Doing so revealed a data integrity problem, that there were 37 arrival dates scheduled for February the 29th, 2018. 2018 was not a leap year so these dates were erroneous. I resolved this by setting these to March 1st, 2018.
+- `country`, `hotel`, and `email` were present in `hotel-booking.csv` but not in `customer-reservations.csv`. Since these may be use during the later analysis stage, I opted to keep these in the merged data, setting the column values to null for `customer-reservations.csv`.
+
+
 ## Presentation
-
-
-
-## Notes
-
-- I encountered this error, which make it look like an invalid date was inserted for somehow.
-    - `Invalid date 'February 29' as '2018' is not a leap year. If necessary set "spark.sql.ansi.enabled" to "false" to bypass this error. SQLSTATE: 22023`
