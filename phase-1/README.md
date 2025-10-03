@@ -65,6 +65,13 @@ From both CR and HB, it appears that arrivals occur about evenly throughout each
 but for both do the histograms reveal that there is an uptick in reservations in some of the latter months.
 
 
-## Dataset Processing
+## Dataset Processing & Merging
 
 ## Presentation
+
+
+
+## Notes
+
+- I encountered this error, which make it look like an invalid date was inserted for somehow.
+    - `Invalid date 'February 29' as '2018' is not a leap year. If necessary set "spark.sql.ansi.enabled" to "false" to bypass this error. SQLSTATE: 22023`
