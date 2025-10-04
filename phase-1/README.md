@@ -75,6 +75,3 @@ Some key points:
 - A new `arrival_time` columns was created from the month, day, and year columns, storing the date as a date instead of as three separate integers.
     - Doing so revealed a data integrity problem, that there were 37 arrival dates scheduled for February the 29th, 2018. 2018 was not a leap year so these dates were erroneous. I resolved this by setting these to March 1st, 2018.
 - `country`, `hotel`, and `email` were present in `hotel-booking.csv` but not in `customer-reservations.csv`. Since these may be use during the later analysis stage, I opted to keep these in the merged data, setting the column values to null for `customer-reservations.csv`.
-
-
-## Presentation
