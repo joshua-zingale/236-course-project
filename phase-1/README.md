@@ -30,7 +30,7 @@ uv add pyspark jupyterlab plotly pandas
 
 ## Exploratory Data Analysis (EDA)
 
-The EDA was done inside of a Python notebook that can be viewed [here](eda/).
+The EDA was done inside of a Python notebook that can be viewed [here](eda/index.html) or in [this notebook](eda.ipynb).
 The notebook contains some histograms generated from various fields of the data.
 
 From the analysis, we gather that both datasets contain reservations for hotels/lodging.
@@ -67,7 +67,7 @@ but for both do the histograms reveal that there is an uptick in reservations in
 
 ## Dataset Processing & Merging
 
-The full procedure for merging the two data sources is documented in the Jupyter Notebook available [here](merging/).
+The full procedure for merging the two data sources is documented in the Jupyter Notebook available [here](merging/index.html) or in [this notebook](merging.ipynb).
 
 Some key points:
 - Merging the data entailed identifying the shared columns, resolving name conflicts like between `arrival_date` and `arrival_date_day_of`.
