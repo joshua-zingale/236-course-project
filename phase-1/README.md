@@ -19,12 +19,12 @@ This project uses [uv](https://docs.astral.sh/uv/) to manage its Python dependen
 Afert initializing the project with
 
 ```bash
-uv init --python 3.13
+$ uv init --python 3.13
 ```
 we added our requirements with
 
 ```bash
-uv add pyspark jupyterlab plotly pandas
+$ uv add pyspark jupyterlab plotly pandas
 ```
 
 
