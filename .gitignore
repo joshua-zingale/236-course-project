@@ -5,3 +5,4 @@ _config.yaml
 Gemfile
 Gemfile.lock
 _site/
+*.zip
