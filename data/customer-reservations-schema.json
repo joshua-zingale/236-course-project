@@ -2,13 +2,19 @@
     "fields": [
       {
         "metadata": {},
-        "name": "hotel",
+        "name": "Booking_ID",
         "nullable": true,
         "type": "string"
       },
       {
         "metadata": {},
-        "name": "canceled",
+        "name": "stays_in_weekend_nights",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "stays_in_week_nights",
         "nullable": true,
         "type": "integer"
       },
@@ -20,13 +26,25 @@
       },
       {
         "metadata": {},
-        "name": "market_segment_type",
+        "name": "arrival_year",
         "nullable": true,
-        "type": "string"
+        "type": "integer"
       },
       {
         "metadata": {},
-        "name": "country",
+        "name": "arrival_month",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "arrival_date",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "market_segment_type",
         "nullable": true,
         "type": "string"
       },
@@ -38,21 +56,9 @@
       },
       {
         "metadata": {},
-        "name": "email",
+        "name": "booking_status",
         "nullable": true,
         "type": "string"
-      },
-      {
-        "metadata": {},
-        "name": "arrival_time",
-        "nullable": true,
-        "type": "date"
-      },
-      {
-        "metadata": {},
-        "name": "stays_in_nights",
-        "nullable": true,
-        "type": "integer"
       }
     ],
     "type": "struct"

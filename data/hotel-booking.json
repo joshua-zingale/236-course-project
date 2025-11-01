@@ -1,0 +1,89 @@
+{
+    "fields": [
+        {
+        "metadata": {},
+        "name": "hotel",
+        "nullable": true,
+        "type": "string"
+        },
+      {
+        "metadata": {},
+        "name": "booking_status",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "lead_time",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "arrival_year",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "arrival_month",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "arrival_date",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "arrival_date_week_number",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "arrival_date_day_of_month",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "stays_in_weekend_nights",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "stays_in_week_nights",
+        "nullable": true,
+        "type": "integer"
+      },
+      {
+        "metadata": {},
+        "name": "market_segment_type",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "country",
+        "nullable": true,
+        "type": "string"
+      },
+      {
+        "metadata": {},
+        "name": "avg_price_per_room",
+        "nullable": true,
+        "type": "double"
+      },
+      {
+        "metadata": {},
+        "name": "email",
+        "nullable": true,
+        "type": "string"
+      }
+    ],
+    "type": "struct"
+  }
