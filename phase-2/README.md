@@ -5,7 +5,7 @@
 To calculate the specified statistics, I opted to use my unified dataset because otherwise separate queries would need to be drafted for the different datasets.
 
 The statistics are given by the tables in the `Statistics` section. 
-The statistics were calculated with [analysis.py](/phase-2/analysis.py).
+The statistics were calculated with [analysis.py](./analysis.py).
 
 All specified statistics required some kind of grouping at least by month.
 The appropriate statics were calculated using aggregation operators like count, sum, and average.
@@ -21,7 +21,7 @@ I used `DataFrame.write.jdbc` to load the data form Spark into Postgres with Pyt
 
 Since the same procedure needed to occur for each of the three datasets,
 for both provided datasets and the one unified dataset,
-I wrote a script, [csv_to_postgres.py](/phase-2/csv_to_postgres.py), that can load CSV data into a specified database with a given schema. The script must be run using the `spark-submit` utility. For example,
+I wrote a script, [csv_to_postgres.py](./csv_to_postgres.py), that can load CSV data into a specified database with a given schema. The script must be run using the `spark-submit` utility. For example,
 
 ```bash
 spark-submit --packages org.postgresql:postgresql:42.7.3 csv_to_postgres.py -h
