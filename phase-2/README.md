@@ -4,7 +4,8 @@
 
 To calculate the specified statistics, I opted to use my unified dataset because otherwise separate queries would need to be drafted for the different datasets.
 
-The statistics are given by the tables in the `Statistics` section.
+The statistics are given by the tables in the `Statistics` section. 
+The statistics were calculated with [analysis.py](/phase-2/analysis.py).
 
 All specified statistics required some kind of grouping at least by month.
 The appropriate statics were calculated using aggregation operators like count, sum, and average.
