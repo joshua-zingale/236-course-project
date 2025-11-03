@@ -35,8 +35,9 @@ def main():
         """A helper function that adds aggregate columns to the data gruped by month"""
         return df_by_month.agg(*exprs).orderBy(fn.col("year"), fn.col("month_num"))
 
-
+    # ################## #
     # CANCELLATION RATES #
+    # ################## #
     t1_df = aggregate(
         (fn.sum("canceled") / fn.count("*")).alias("cancelation_rate")
     )
