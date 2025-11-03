@@ -1,6 +1,11 @@
 """Loads a CSV file alongside a schema file to create a table in a postgres database.
 
 This will OVERWRITE any data in the target table.
+
+The script must be run using the spark-submit utility. For example,
+
+spark-submit --packages org.postgresql:postgresql:42.7.3 csv_to_postgres.py -h
+
 """
 
 import json
