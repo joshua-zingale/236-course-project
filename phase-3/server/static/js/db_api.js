@@ -1,3 +1,5 @@
+export {fetchQueryResult, fetchTableList};
+
 /**
  * @typedef {Object} Ordering
  * @property {string} column - The database column name to sort by.
@@ -6,7 +8,7 @@
 
 /**
  * @typedef {Object} Constraint
- * @property {('='|'!='|'<'|'<='|'>'|'>='|'like'|'not like')} Operator - The SQL comparison operator.
+ * @property {('='|'!='|'<'|'<='|'>'|'>='|'like'|'not like')} operator - The SQL comparison operator.
  * @property {string} column - The database column name to apply the constraint to.
  * @property {any} argument - The value to compare against the column.
  */
@@ -66,6 +68,13 @@ async function fetchQueryResult(query) {
         };
     }
 };
+
+
+/**
+ * @typedef {Object} ColumnInfo
+ * @property {string} name - The name of the field.
+ * @property {string} type - The type of the field.
+ */
 
 
 /**

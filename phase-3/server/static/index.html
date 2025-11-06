@@ -7,19 +7,13 @@
 </head>
 <body>
     <h1>Data Viewer</h1>
-    <db-relation style="width: 70%; margin: auto;"></db-relation>
 
-    <script src="/static/js/db_api.js"></script>
-    <script src="/static/js/components.js"></script>
-    <script>
-        const relation = document.querySelector("db-relation");
-        relation.query = {
-            "table":"unified_reservations",
-            "columns":["arrival_time", "canceled", "email"],
-            "constraints": [{"operator": ">", "column":"arrival_time","argument": "2016-01-01"}],
-            "limit": 100,
-            "offset": 0,
-            "order":[{"column": "arrival_time"}]};
-    </script>
+    <div>
+        <db-query-builder id="query-builder"></db-query-builder>
+        <button id="search">Search</button>
+    </div>
+    <db-relation style="width: 70%; margin: auto;" id="relation"></db-relation>
+
+    <script type="module" src="/static/js/app.js"></script>
 </body>
 </html>
