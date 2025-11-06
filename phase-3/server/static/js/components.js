@@ -1,5 +1,5 @@
 import { fetchQueryResult, fetchTableList } from "./db_api.js";
-export {Relation, QueryBuilder, ColumnConstraint, ColumnConstrainer}; 
+export {Relation, QueryBuilder, ColumnConstraint, ColumnConstrainer, Orderer}; 
 
 class Relation extends HTMLElement {
     constructor() {
@@ -49,16 +49,21 @@ class Relation extends HTMLElement {
 
             table {
                 border-collapse: collapse;
-                border: 2px solid var(--dark-color);
                 font-family: sans-serif;
                 font-size: 0.8rem;
                 color: var(--dark-color);
                 letter-spacing: 1px;
+                border-radius: 40px 40px 20px 20px;
+                overflow: hidden;
             }
 
             caption {
                 padding: 10px;
                 font-weight: bold;
+            }
+
+            thead > tr {
+                border-radius: 20px 20px 0px 0px;
             }
 
             thead,
@@ -67,17 +72,22 @@ class Relation extends HTMLElement {
                 background-color: var(--primary-color);
             }
 
+            tbody > tr:hover {
+                background-color: var(--accent-color);
+                color: var(--dark-color);
+            }
+
             th,
             td {
-                border: 1px solid var(--dark-color);
+                border: none;
                 padding: 8px 10px;
             }
 
-            tbody > tr:nth-of-type(even) {
-                background-color: var(--accent-color);
-                color: var(--primary-color);
+            tbody > tr:nth-of-type(even):not(:hover) {
+                background-color: var(--primary-color-3);
+                color: var(--dark-color);
             }
-            tbody > tr:nth-of-type(odd) {
+            tbody > tr:nth-of-type(odd):not(:hover) {
                 background-color: var(--light-color);
                 color: var(--dark-color);
             }
@@ -107,6 +117,9 @@ class QueryBuilder extends HTMLElement {
 
         /** @type {ColumnConstrainer[]} */
         this._columnConstrainers = [];
+
+        /** @type {Orderer | null} */
+        this._orderer = null;
     }
 
     get table() {
@@ -120,6 +133,7 @@ class QueryBuilder extends HTMLElement {
             columns: [],
             limit: 10,
             constraints: [].concat(...this._columnConstrainers.map(cc => cc.constraints)),
+            order: this._orderer?.orderings || [],
         }
     }
 
@@ -137,15 +151,11 @@ class QueryBuilder extends HTMLElement {
 
     async connectedCallback() {
         await this._updateTables();
+        this._orderer = new Orderer();
         this.render();
     }
 
-    render() {
-        if (this._tables === null) {
-            console.error("Invalid state");
-            return;
-        }
-
+    _initializeTableSelector() {
         const defaultOption = document.createElement("option");
         defaultOption.innerText = "Select a table";
         defaultOption.toggleAttribute("disabled");
@@ -157,36 +167,199 @@ class QueryBuilder extends HTMLElement {
             option.text = tableName;
             this._tableSelector.appendChild(option);
         }
-        
-        const div = document.createElement("div");
-        this.shadow.replaceChildren(div);
+    }
 
-        div.appendChild(this._tableSelector);
+    _getColumnConstrainers(tableName) {
+        if (tableName == "") {
+            console.error("table cannot be empty string");
+            return;
+        }
+        const columnToTypeMap = this._tables[tableName];
+        const columnConstrainers = [];
+        for (const key in columnToTypeMap) {
+            const ccner = new ColumnConstrainer(key, columnToTypeMap[key]);
+            columnConstrainers.push(ccner);
+        }
+        return columnConstrainers;
+    }
 
-        const constraintDiv = document.createElement("div");
-        div.appendChild(constraintDiv);
+    _getColumnConstrainersContainer(columnConstrainers) {
+        const dl = document.createElement("dl");
+        columnConstrainers.forEach(cc => {
+            const dt = document.createElement("dt");
+            dt.innerText = cc.column;
+            dl.appendChild(dt);
+            const dd = document.createElement("dd");
+            dd.appendChild(cc);
+            dl.appendChild(dd);
+        });
+        return dl;
+    }
 
+    render() {
+        if (this._tables === null) {
+            console.error("Invalid state");
+            return;
+        }
+
+        this._initializeTableSelector();
+        this.shadow.replaceChildren(this._tableSelector);
 
         this._tableSelector.addEventListener("change", _ => {
-            if (this.table == "") {
-                return;
-            }
-            const columnToTypeMap = this._tables[this.table];
-            const dl = document.createElement("dl");
-            this._columnConstrainers = [];
-            for (const key in columnToTypeMap) {
-                const ccner = new ColumnConstrainer(key, columnToTypeMap[key]);
-                this._columnConstrainers.push(ccner);
-                const dt = document.createElement("dt");
-                dt.innerText = key;
-                dl.appendChild(dt);
-                const dd = document.createElement("dd");
-                dd.appendChild(ccner);
+            this._columnConstrainers = this._getColumnConstrainers(this.table);
+            const columns = Object.keys(this._tables[this.table]);
+            this._orderer.columns = columns;
+            this.shadow.replaceChildren(
+                this._tableSelector,
+                this._getColumnConstrainersContainer(this._columnConstrainers),
+                this._orderer,
+            );
+        });        
+    }
+}
 
-                dl.appendChild(dd);
+function createOrderer(initialColumns) {
+    const list = document.createElement('ul');
+    list.className = 'orderer-list';
+
+    const createListItem = (columnName) => {
+        const item = document.createElement('li');
+        item.className = 'orderer-item';
+        item.dataset.columnName = columnName;
+        item.dataset.sortDirection = 'asc'; 
+
+        const nameSpan = document.createElement('span');
+        nameSpan.textContent = columnName;
+        nameSpan.className = 'column-name-label';
+
+        const toggleButton = document.createElement('button');
+        toggleButton.className = 'sort-toggle-btn asc';
+        toggleButton.innerHTML = '&#9650; ASC'; 
+        
+        toggleButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            const currentDir = item.dataset.sortDirection;
+            if (currentDir === 'asc') {
+                item.dataset.sortDirection = 'desc';
+                toggleButton.innerHTML = '&#9660; DESC';
+                toggleButton.classList.replace('asc', 'desc');
+            } else {
+                item.dataset.sortDirection = 'asc';
+                toggleButton.innerHTML = '&#9650; ASC';
+                toggleButton.classList.replace('desc', 'asc');
             }
-            constraintDiv.replaceChildren(dl);
         });
+
+        item.appendChild(nameSpan);
+        item.appendChild(toggleButton);
+        return item;
+    };
+
+    initialColumns.forEach(columnName => {
+        list.appendChild(createListItem(columnName));
+    });
+
+    Sortable.create(list, {
+        animation: 150,
+        handle: '.orderer-item',
+        ghostClass: 'sortable-ghost',
+        chosenClass: 'sortable-chosen'
+    });
+
+    return {
+        component: list,
+
+        get ordering() {
+            return Array.from(list.children).map(li => ({
+                column: li.dataset.columnName,
+                direction: li.dataset.sortDirection
+            }));
+        }
+    };
+}
+
+class Orderer extends HTMLElement {
+    constructor(
+        columns = []
+    ) {
+        super();
+        this.shadow = this.attachShadow({mode: "open"});
+        /** @type {HTMLUListElement} */
+        this._ul = document.createElement("ul");
+        this.columns = columns;
+    }
+
+    /** @returns {import("./db_api.js").Ordering[]} */
+    get orderings() {
+        return this._lis.map(li => {
+            return {
+                column: li.getAttribute('data-column'),
+                descending: li.hasAttribute("descending"),
+            }
+        });
+    }
+
+    get _lis() {
+        return [...this._ul.children];
+    }
+
+    set _lis(value) {
+        this._ul.replaceChildren(...value);
+    }
+
+    get columns() {
+        return this._lis.map(li => li.textContent);
+    }
+    set columns(columns) {
+        this._lis = columns.map(c => {
+            const li = document.createElement("li");
+            li.classList.add('orderer-item');
+            li.setAttribute('data-column', c);
+
+
+            const indicator = document.createElement("span");
+            indicator.classList.add('orderer-indicator');
+            indicator.textContent = 'ASC';
+            li.setAttribute('data-sort-state', 'ASC');
+
+            const text = document.createElement("span");
+            text.textContent = c;
+
+            li.append(indicator, text);
+            
+            li.addEventListener('click', this._handleLiClick);
+            
+            return li;
+        });
+    }
+
+    _handleLiClick(event) {
+        const li = event.currentTarget;
+        const indicator = li.querySelector('.orderer-indicator');
+        
+        const isDescending = li.toggleAttribute("descending");
+        
+        if (isDescending) {
+            indicator.textContent = 'DESC';
+            li.setAttribute('data-sort-state', 'DESC');
+        } else {
+            indicator.textContent = 'ASC';
+            li.setAttribute('data-sort-state', 'ASC');
+        }
+    }
+
+    connectedCallback() {
+        this.render();
+    }
+
+    render() {
+        Sortable.create(this._ul, {
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            chosenClass: 'sortable-chosen'
+        });
+        this.shadow.replaceChildren(this._ul);
     }
 }
 

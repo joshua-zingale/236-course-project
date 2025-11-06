@@ -1,6 +1,10 @@
 :root {
-    --primary-color: #003DA5;
-    --secondary-color: #FFB81C;
+    --primary-color: hsl(218, 100%, 32%);
+    --primary-color-2: hsl(218, 100%, 70%);
+    --primary-color-3: hsl(218, 100%, 95%);
+    --secondary-color: hsl(41, 100%, 55.5%);
+    --secondary-color-2: hsl(41, 100%, 70%);
+    --secondary-color-3: hsl(41, 100%, 95%);
     --accent-color: #FED141;
     --light-color: #fefefe;
     --dark-color: #333333;
