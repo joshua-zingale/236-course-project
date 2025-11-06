@@ -30,23 +30,68 @@ class Relation extends HTMLElement {
     }
 
     async render() {
-        const relation = document.createElement("div");
-        this.shadow.innerHTML = ``;
-        this.shadow.appendChild(relation)
-
         if (this._query === null) {
-            relation.appendChild(getRelationHeader([]));
+            console.error("No query specified");
             return;
         }
 
         const res = await fetchQueryResult(this.query);
 
         const columnNames = this.query.columns && this.query.columns.length != 0
-            ? this.query.column
+            ? this.query.columns
             : (await fetchTableList()).rows.find(row => row.table_name === this.query.table).columns.map(c => c.name);
-        relation.appendChild(getRelationHeader(columnNames));
-        const rowData = res.rows.map(row => columnNames.map(column => row[column]));
-        rowData.forEach(row => relation.appendChild(getRow(row)));
+        const rows = res.rows.map(row => columnNames.map(column => row[column]));
+        this.shadow.innerHTML = /*html*/`
+        <style>
+            :host {
+                display:block;
+            }
+
+            table {
+                border-collapse: collapse;
+                border: 2px solid var(--dark-color);
+                font-family: sans-serif;
+                font-size: 0.8rem;
+                color: var(--dark-color);
+                letter-spacing: 1px;
+            }
+
+            caption {
+                padding: 10px;
+                font-weight: bold;
+            }
+
+            thead,
+            tfoot {
+                color: var(--light-color);
+                background-color: var(--primary-color);
+            }
+
+            th,
+            td {
+                border: 1px solid var(--dark-color);
+                padding: 8px 10px;
+            }
+
+            tbody > tr:nth-of-type(even) {
+                background-color: var(--accent-color);
+                color: var(--primary-color);
+            }
+            tbody > tr:nth-of-type(odd) {
+                background-color: var(--light-color);
+                color: var(--dark-color);
+            }
+        </style>
+        <table>
+            <caption>${this.query.table}</caption>
+            <thead>
+            <tr>${columnNames.map(col =>`<th scope="col">${removeHTML(col)}</th>`).join('')}</tr>
+            </thead>
+            <tbody>
+                ${rows.map(row => `<tr>${row.map(datum => `<td>${datum}</td>`).join("")}</tr>`).join("")}
+            </tbody>
+        </table>
+        `;        
     }
 }
 
@@ -297,71 +342,3 @@ function removeHTML(text) {
     decoder.textContent = text;
     return decoder.textContent || "";
 }
-
-function getRow(data) {
-    const div = document.createElement("div")
-    div.innerHTML = /*html*/`
-    <style>
-        :host {
-            display:block;
-        }
-        ul {
-            display: flex;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-            justify-content: space-evenly;
-            list-style-type: none;
-            margin: 0.5em;
-        }
-
-        ul:hover {
-            background-color: #f7f7f7;
-        }
-
-        li {
-            padding: 0 10px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            flex: 1;
-        }
-    </style>
-    <ul>
-        ${data.map(item => `<li>${item}</li>`).join('')}
-    </ul>`;
-    return div;
-}
-
-function getRelationHeader(columns) {
-    const div = document.createElement("div");
-    div.innerHTML = /*html*/`
-    <style>
-        :host {
-            display:block;
-        }
-        ul {
-            display: flex;
-            padding: 10px;
-            border: 1px solid #ccc;
-            background-color: #f0f0f0;
-            justify-content: space-evenly;
-            list-style-type: none;
-        }
-
-        li {
-            padding: 0 10px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            flex: 1;
-            text-align:left;
-        }
-    </style>
-    <ul>${columns.map(item => /*html*/`
-        <li>${item}</li>
-    `).join('')}</ul>
-    `;
-    return div;
-}
-
