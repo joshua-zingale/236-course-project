@@ -10,7 +10,31 @@
     --dark-color: #333333;
 }
 
+h1 {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+    margin: auto;
+    width: fit-content;
+    border-radius: 8px;
+    padding: 0px 32px;
+}
+
 body {
     background-color: var(--light-color);
     color: var(--dark-color);
+}
+
+button#search {
+    float: right;
+    border-radius: 8px;
+    background-color: var(--accent-color);
+    color: var(--dark-color);
+    border: none;
+    font-size: 1.5em;
+    margin-right: 16px;
+    margin-top: 8px;
+}
+button#search:hover {
+    background-color: var(--primary-color);
+    color: var(--light-color);
 }
