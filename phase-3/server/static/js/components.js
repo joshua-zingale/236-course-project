@@ -4,7 +4,6 @@ export {Relation, QueryBuilder, ColumnConstraint, ColumnConstrainer, Orderer};
 class Relation extends HTMLElement {
     constructor() {
         super();
-        this.style.display = "block";
         this.shadow = this.attachShadow({mode: "open"});
 
         /** @type {Query | null} */
@@ -108,7 +107,22 @@ class Relation extends HTMLElement {
 class QueryBuilder extends HTMLElement {
     constructor() {
         super();
+        const stylesheet = new CSSStyleSheet();
+        stylesheet.replaceSync(/*css*/`
+            :host {
+                display: block;
+            }
+            ul {
+                display: flex;
+                flex-wrap: wrap;
+                list-style-type: none;
+            }
+            li {
+                margin: 10px;
+            }
+        `);
         this.shadow = this.attachShadow({mode: "open"});
+        this.shadow.adoptedStyleSheets = [stylesheet]
         this._tables = null;
 
         this._tableSelector = document.createElement("select");
@@ -184,16 +198,17 @@ class QueryBuilder extends HTMLElement {
     }
 
     _getColumnConstrainersContainer(columnConstrainers) {
-        const dl = document.createElement("dl");
+        const ul = document.createElement("ul");
+
         columnConstrainers.forEach(cc => {
-            const dt = document.createElement("dt");
-            dt.innerText = cc.column;
-            dl.appendChild(dt);
-            const dd = document.createElement("dd");
-            dd.appendChild(cc);
-            dl.appendChild(dd);
+            const li = document.createElement("li");
+            const columnNameSpan = document.createElement("span");
+            columnNameSpan.innerHTML = cc.column;
+            li.appendChild(columnNameSpan);
+            li.appendChild(cc);
+            ul.appendChild(li);
         });
-        return dl;
+        return ul;
     }
 
     render() {
@@ -218,67 +233,6 @@ class QueryBuilder extends HTMLElement {
     }
 }
 
-function createOrderer(initialColumns) {
-    const list = document.createElement('ul');
-    list.className = 'orderer-list';
-
-    const createListItem = (columnName) => {
-        const item = document.createElement('li');
-        item.className = 'orderer-item';
-        item.dataset.columnName = columnName;
-        item.dataset.sortDirection = 'asc'; 
-
-        const nameSpan = document.createElement('span');
-        nameSpan.textContent = columnName;
-        nameSpan.className = 'column-name-label';
-
-        const toggleButton = document.createElement('button');
-        toggleButton.className = 'sort-toggle-btn asc';
-        toggleButton.innerHTML = '&#9650; ASC'; 
-        
-        toggleButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            
-            const currentDir = item.dataset.sortDirection;
-            if (currentDir === 'asc') {
-                item.dataset.sortDirection = 'desc';
-                toggleButton.innerHTML = '&#9660; DESC';
-                toggleButton.classList.replace('asc', 'desc');
-            } else {
-                item.dataset.sortDirection = 'asc';
-                toggleButton.innerHTML = '&#9650; ASC';
-                toggleButton.classList.replace('desc', 'asc');
-            }
-        });
-
-        item.appendChild(nameSpan);
-        item.appendChild(toggleButton);
-        return item;
-    };
-
-    initialColumns.forEach(columnName => {
-        list.appendChild(createListItem(columnName));
-    });
-
-    Sortable.create(list, {
-        animation: 150,
-        handle: '.orderer-item',
-        ghostClass: 'sortable-ghost',
-        chosenClass: 'sortable-chosen'
-    });
-
-    return {
-        component: list,
-
-        get ordering() {
-            return Array.from(list.children).map(li => ({
-                column: li.dataset.columnName,
-                direction: li.dataset.sortDirection
-            }));
-        }
-    };
-}
-
 class Orderer extends HTMLElement {
     constructor(
         columns = []
@@ -288,6 +242,21 @@ class Orderer extends HTMLElement {
         /** @type {HTMLUListElement} */
         this._ul = document.createElement("ul");
         this.columns = columns;
+
+        const sheet = new CSSStyleSheet();
+        sheet.replaceSync(/*css*/`
+        ul {
+            display: flex;
+            justify-content: space-between;
+        }
+        li {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+        } 
+        `);
+        this.shadow.adoptedStyleSheets = [sheet];
     }
 
     /** @returns {import("./db_api.js").Ordering[]} */
@@ -314,14 +283,13 @@ class Orderer extends HTMLElement {
     set columns(columns) {
         this._lis = columns.map(c => {
             const li = document.createElement("li");
-            li.classList.add('orderer-item');
+
             li.setAttribute('data-column', c);
 
 
             const indicator = document.createElement("span");
             indicator.classList.add('orderer-indicator');
             indicator.textContent = 'ASC';
-            li.setAttribute('data-sort-state', 'ASC');
 
             const text = document.createElement("span");
             text.textContent = c;
@@ -342,10 +310,8 @@ class Orderer extends HTMLElement {
         
         if (isDescending) {
             indicator.textContent = 'DESC';
-            li.setAttribute('data-sort-state', 'DESC');
         } else {
             indicator.textContent = 'ASC';
-            li.setAttribute('data-sort-state', 'ASC');
         }
     }
 
