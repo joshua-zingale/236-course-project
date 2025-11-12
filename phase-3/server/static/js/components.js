@@ -19,8 +19,12 @@ class Relation extends HTMLElement {
         return this._query;
     }
 
-    get _page() {
+    get page() {
         return Math.floor(this.query.offset / this.query.limit)
+    }
+    
+    set page(value) {
+        this.setPage(value);
     }
 
     set query(value) {
@@ -111,9 +115,6 @@ class Relation extends HTMLElement {
         </style>
         <table>
             <caption>${this.query.table}</caption>
-            <tfoot>
-                <button id="prevButton">prev</button><input id="setPage" type=text value="${this._page + 1}"><button id="nextButton">next</button>
-            </tfoot>
             <thead>
             <tr>${columnNames.map(col =>`<th scope="col">${removeHTML(col)}</th>`).join('')}</tr>
             </thead>
@@ -122,17 +123,6 @@ class Relation extends HTMLElement {
             </tbody>
         </table>
         `;
-        
-        this.shadow.querySelector("#prevButton").addEventListener("click", _ => this.setPage(this._page > 0 ? this._page - 1 : this._page));
-        this.shadow.querySelector("#nextButton").addEventListener("click", _ => this.setPage(this._page + 1));
-        this.shadow.querySelector("#setPage").addEventListener('keyup', e => {
-            if (e.key === 'Enter') {
-                e.preventDefault(); 
-                const input = e.target;
-                const pageNumber = Number(input.value);
-                this.setPage(Math.max(pageNumber - 1, 0));
-            }
-        });
     }
 }
 
