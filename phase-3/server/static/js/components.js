@@ -568,7 +568,7 @@ class ColumnConstrainer extends HTMLElement {
 
 class ColumnConstraint extends HTMLElement {
 
-    static _generalOperators = new Set([ "=", "!=", ">", "<"]);
+    static _generalOperators = new Set(["<", "<=", "=", "!=", ">=", ">"]);
 
     static _typeSpecificOperatorMap = {
         "text": new Set(["like", "not like"]),

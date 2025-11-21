@@ -97,8 +97,6 @@ func (h dbHandler) handleQuery(w http.ResponseWriter, r *http.Request) {
 
 	res := fetchQueryResult(r.Context(), h.pool, sql)
 
-	log.Println(sql)
-
 	writeJson(w, res)
 }
 
@@ -223,6 +221,9 @@ var operatorMap = map[string]string{
 }
 
 func fetchQueryResult(ctx context.Context, pool *pgxpool.Pool, sql string, args ...any) *QueryResult {
+
+	log.Println(sql)
+
 	rows, err := pool.Query(ctx, sql, args...)
 	if err != nil {
 		return &QueryResult{

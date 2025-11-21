@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -11,7 +12,11 @@ import (
 )
 
 func main() {
-	dbpool, err := pgxpool.New(context.Background(), "postgres://postgres:postgres@127.0.0.1:5001/postgres")
+
+	dbPort := flag.Int("dbport", 5432, "the port of the database")
+	flag.Parse()
+
+	dbpool, err := pgxpool.New(context.Background(), fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", *dbPort))
 	if err != nil {
 		log.Fatalf("Could not connect to database: %s", err)
 	}

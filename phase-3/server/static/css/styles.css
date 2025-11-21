@@ -38,3 +38,24 @@ button#search:hover {
     background-color: var(--primary-color);
     color: var(--light-color);
 }
+
+#pagination {
+    margin-top: 8px;
+}
+
+#prevButton,
+#nextButton {
+    background-color: var(--accent-color);
+    border-radius: 8px;
+    color: var(--dark-color);
+    border: none;
+}
+#prevButton:hover,
+#nextButton:hover {
+    background-color: var(--primary-color);
+    color: var(--light-color);
+}
+
+#setPage {
+    width: 4em;
+}
