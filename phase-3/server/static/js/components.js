@@ -57,7 +57,8 @@ class Relation extends HTMLElement {
         var rows;
         try {
             rows = res.rows.map(row => columnNames.map(column => row[column]));
-        } catch {
+        } catch (e) {
+            console.error(e);
             rows = [];
         }
         this.shadow.innerHTML = /*html*/`
@@ -568,7 +569,7 @@ class ColumnConstrainer extends HTMLElement {
 
 class ColumnConstraint extends HTMLElement {
 
-    static _generalOperators = new Set(["<", "<=", "=", "!=", ">=", ">"]);
+    static _generalOperators = new Set(["<", "<=", "=", "!=", ">=", ">", "is", "is not"]);
 
     static _typeSpecificOperatorMap = {
         "text": new Set(["like", "not like"]),
@@ -629,7 +630,16 @@ class ColumnConstraint extends HTMLElement {
     }
 
     get argument() {
-        return this._argumentInput?.value || "";
+        var value = this._argumentInput?.value || "";
+        if (["is", "is not"].includes(this.operator)) {
+            if (value.toLowerCase() == "null") {
+                return null;
+            } else {
+                console.error("Invalid argument for operator.");
+            }
+        }
+        
+        return value;
     }
 
     /**@returns {import("./db_api.js").Constraint} */

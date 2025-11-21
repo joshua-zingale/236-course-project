@@ -130,7 +130,10 @@ func constraintsToWhereClause(constraints []Constraint) (string, error) {
 		case string:
 			argument = fmt.Sprintf("'%s'", arg)
 		default:
-			return "", fmt.Errorf("invalid argument type: must be a string or a number")
+			if !(arg == nil && (constraint.Operator == "is" || constraint.Operator == "is not")) {
+				return "", fmt.Errorf("invalid argument type: must be a string or a number")
+			}
+			argument = "NULL"
 		}
 		if operator, ok := operatorMap[constraint.Operator]; ok {
 			constraintStrings = append(constraintStrings, fmt.Sprintf("%s %s %s", column, operator, argument))
@@ -218,6 +221,8 @@ var operatorMap = map[string]string{
 	">":        ">",
 	"like":     "LIKE",
 	"not like": "NOT LIKE",
+	"is":       "IS",
+	"is not":   "IS NOT",
 }
 
 func fetchQueryResult(ctx context.Context, pool *pgxpool.Pool, sql string, args ...any) *QueryResult {
