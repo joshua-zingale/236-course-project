@@ -13,10 +13,11 @@ import (
 
 func main() {
 
-	dbPort := flag.Int("dbport", 5432, "the port of the database")
+	dbAddress := flag.String("dbaddress", "127.0.0.1", "the address, e.g. 127.0.0.1, of the postgres database.")
+	dbPort := flag.Int("dbport", 5432, "the port of the postgres database")
 	flag.Parse()
 
-	dbpool, err := pgxpool.New(context.Background(), fmt.Sprintf("postgres://postgres:postgres@127.0.0.1:%d/postgres", *dbPort))
+	dbpool, err := pgxpool.New(context.Background(), fmt.Sprintf("postgres://postgres:postgres@%s:%d/postgres", *dbAddress, *dbPort))
 	if err != nil {
 		log.Fatalf("Could not connect to database: %s", err)
 	}
