@@ -130,6 +130,8 @@ func constraintsToWhereClause(constraints []Constraint) (string, error) {
 		case string:
 			argument = fmt.Sprintf("'%s'", arg)
 		default:
+
+			// Handle NULL value for "is" and "is not" operators
 			if !(arg == nil && (constraint.Operator == "is" || constraint.Operator == "is not")) {
 				return "", fmt.Errorf("invalid argument type: must be a string or a number")
 			}
