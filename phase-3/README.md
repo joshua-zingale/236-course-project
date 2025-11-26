@@ -14,7 +14,7 @@ Additionally, the bottom row of field names may be reordered by dragging and dro
 
 ![Query Builder](demo-images/query-builder.png)
 
-After placing constraints on the rows of the table, the "Search" button will trigger the first page of the returned relation. Underneath the displayed relation lies a pagination menu, wherein the previous page and next page buttons can browse more options or the desired page number can be entered manually.
+After placing constraints on the rows of the table, the "Search" button will trigger the first page of the returned relation. Underneath the displayed relation lies a pagination menu, wherein the previous page and next page buttons can navigate between pages in the returned relation or the desired page number can be entered manually.
 
 ![Full View with a Relation Displayed](demo-images/relation-display.png)
 
@@ -78,8 +78,10 @@ For the back end, the reflection is more of a pipeline, where data from the data
 The front-end application was created without the use of an external framework.
 In lieu of a framework, JavaScript [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) implemented the interactive portions of the web UI. Web Components allow element styling and callbacks to be isolated to each component using shadow DOMs, combating bugs due to styling overriding and clashing callbacks.
 
+After using `GET /api/tables` to get the table information, the front end makes queries by hitting `POST /api/query` with attached JSON data. From hence, the web server parses the data and sends the appropriate SQL statement to the connected database. The web server does not accept arbitrary SQL statements, which prevents attackers from performing illegal actions like deletion. The `POST /api/query` endpoint can only create sideëffectless SQL statements.
 
 
+## Areas for Improvement
 
-
-
+Whereas the web server performs a decent amount of error checking---responding with an error message, for example, if a non-existent field or constraint type is sent to `POST /api/query`---the front end performs almost no error checking.
+Therefore, if the web server is not running, the front end application will not gracefully indicate disfunction; however, the front end is designed such that illegal queries should never be constructed.
