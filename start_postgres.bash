@@ -1,7 +1,7 @@
 docker run -e POSTGRES_USER=postgres \
     -e POSTGRES_PASSWORD=postgres \
     -e POSTGRES_DB=postgres \
-    -p 5001:5432 \
+    -p 5432:5432 \
     --rm \
     -v "$(pwd)/data/sql-data.sql:/docker-entrypoint-initdb.d/init.sql" \
     postgres:17
