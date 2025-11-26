@@ -24,7 +24,7 @@ After placing constraints on the rows of the table, the "Search" button will tri
 ### Database
 
 The web server requires a Postgres database to be running to function.
-A Postgres database can be started in a Docker container using [../start_postgres.bash](../start_postgres.bash), which is in the root directory of this repository. This database will initialize with three tables: one for either of the tables provided for the assignment and one for the unified dataset.
+A Postgres database can be started in a Docker container using [../start_postgres.bash](../start_postgres.bash), which is in the root directory of this repository. Note that the bash script must be run from the [root directory](/) of the entire repository This database will initialize with three tables: one for either of the tables provided for the assignment and one for the unified dataset.
 
 ### Compilation
 The web server must be compiled with the [Go](https://go.dev/).
